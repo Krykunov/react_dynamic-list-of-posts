@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import cn from 'classnames';
 
 import { User } from '../types/User';
 import { Post } from '../types/Post';
+import classNames from 'classnames';
 
 type Props = {
   users: User[];
@@ -25,8 +26,28 @@ export const UserSelector: React.FC<Props> = ({
     setIsOpen(false);
   };
 
+  const componentRef = useRef<HTMLDivElement>(null);
+
+  const handleClickOutside = (event: MouseEvent) => {
+    if (
+      componentRef.current &&
+      !componentRef.current.contains(event.target as Node)
+    ) {
+      setIsOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
   return (
     <div
+      ref={componentRef}
       data-cy="UserSelector"
       className={cn('dropdown', { 'is-active': isOpen })}
     >
@@ -53,7 +74,9 @@ export const UserSelector: React.FC<Props> = ({
               <a
                 key={user.id}
                 href={`#user-${user.id}`}
-                className="dropdown-item"
+                className={classNames('dropdown-item', {
+                  'is-active': currentUser?.id === user.id,
+                })}
                 onClick={() => handleSelectUser(user)}
               >
                 {user.name}

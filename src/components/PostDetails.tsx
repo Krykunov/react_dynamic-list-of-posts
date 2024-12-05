@@ -23,15 +23,22 @@ export const PostDetails: React.FC<Props> = ({
     isCommentsError,
     deleteComment,
     isCommentCreating,
+    isCommentDeleteError,
   } = useComments(currentPost.id);
 
   const isShowCommentsBlock = !isCommentsError && !isCommentsLoading;
+
+  const isNoCommentsMessageShown = isShowCommentsBlock && !comments.length;
+
+  const isCommentsBlockShown = isShowCommentsBlock && comments.length !== 0;
+
+  const isCommentButtonShown = isShowCommentsBlock && !isShowForm;
 
   return (
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">
         <div className="block">
-          <h2 data-cy="PostTitle">{`#${currentPost.id} ${currentPost.title}`}</h2>
+          <h2 data-cy="PostTitle">{`#${currentPost.id}: ${currentPost.title}`}</h2>
 
           <p data-cy="PostBody">{currentPost.body}</p>
         </div>
@@ -45,13 +52,13 @@ export const PostDetails: React.FC<Props> = ({
             </div>
           )}
 
-          {isShowCommentsBlock && comments.length === 0 && (
+          {isNoCommentsMessageShown && (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
             </p>
           )}
 
-          {isShowCommentsBlock && comments.length !== 0 && (
+          {isCommentsBlockShown && (
             <>
               <p className="title is-4">Comments:{comments.length}</p>
               {comments.map(comment => (
@@ -59,12 +66,13 @@ export const PostDetails: React.FC<Props> = ({
                   key={comment.id}
                   comment={comment}
                   deleteComment={deleteComment}
+                  isCommentDeleteError={isCommentDeleteError}
                 />
               ))}
             </>
           )}
 
-          {isShowCommentsBlock && !isShowForm && (
+          {isCommentButtonShown && (
             <button
               data-cy="WriteCommentButton"
               type="button"

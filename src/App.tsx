@@ -13,14 +13,14 @@ import { usePosts } from './hooks/usePosts';
 import { useState } from 'react';
 
 export const App: React.FC = () => {
-  const [isShowForm, setIsShowForm] = useState(false);
+  const [isFormShown, setIsFormShown] = useState(false);
 
   const { users, currentUser, setCurrentUser } = useUsers();
 
   const { posts, currentPost, setCurrentPost, isPostsLoading, isPostsError } =
     usePosts(currentUser?.id || null);
 
-  const isShowPostsBlock = currentUser && !isPostsError && !isPostsLoading;
+  const isPostsBlockShown = currentUser && !isPostsError && !isPostsLoading;
 
   return (
     <main className="section">
@@ -53,8 +53,8 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {isShowPostsBlock &&
-                  (posts.length === 0 ? (
+                {isPostsBlockShown &&
+                  (!posts.length ? (
                     <div
                       className="notification is-warning"
                       data-cy="NoPostsYet"
@@ -66,7 +66,7 @@ export const App: React.FC = () => {
                       posts={posts}
                       currentPost={currentPost}
                       setCurrentPost={setCurrentPost}
-                      setIsShowForm={setIsShowForm}
+                      setIsShowForm={setIsFormShown}
                     />
                   ))}
               </div>
@@ -83,8 +83,8 @@ export const App: React.FC = () => {
               <div className="tile is-child box is-success ">
                 <PostDetails
                   currentPost={currentPost}
-                  isShowForm={isShowForm}
-                  setIsShowForm={setIsShowForm}
+                  isShowForm={isFormShown}
+                  setIsShowForm={setIsFormShown}
                 />
               </div>
             )}

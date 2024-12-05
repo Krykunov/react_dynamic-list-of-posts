@@ -6,6 +6,7 @@ export const useComments = (postId?: number | null) => {
   const [isCommentsLoading, setIsCommentsLoading] = useState(false);
   const [isCommentCreating, setIsCommentCreating] = useState(false);
   const [isCommentsError, setIsCommentsError] = useState(false);
+  const [isCommentDeleteError, setIsCommentDeleteError] = useState(false);
   const [comments, setComments] = useState<Comment[]>([]);
 
   const loadComments = useCallback(async () => {
@@ -16,13 +17,11 @@ export const useComments = (postId?: number | null) => {
     setIsCommentsLoading(true);
     setIsCommentsError(false);
     try {
-      try {
-        const usersFromServer = await postService.getComments(postId);
+      const usersFromServer = await postService.getComments(postId);
 
-        setComments(usersFromServer);
-      } catch {
-        setIsCommentsError(true);
-      }
+      setComments(usersFromServer);
+    } catch {
+      setIsCommentsError(true);
     } finally {
       setIsCommentsLoading(false);
     }
@@ -31,13 +30,11 @@ export const useComments = (postId?: number | null) => {
   const addComment = useCallback(async (comment: Omit<Comment, 'id'>) => {
     setIsCommentCreating(true);
     try {
-      try {
-        const newComment = await postService.createComment(comment);
+      const newComment = await postService.createComment(comment);
 
-        setComments(prev => [...prev, newComment]);
-      } catch {
-        setIsCommentsError(true);
-      }
+      setComments(prev => [...prev, newComment]);
+    } catch {
+      setIsCommentsError(true);
     } finally {
       setIsCommentCreating(false);
     }
@@ -47,14 +44,12 @@ export const useComments = (postId?: number | null) => {
     async (commentId: number) => {
       setComments(prev => prev.filter(comment => comment.id !== commentId));
       try {
-        try {
-          await postService.deleteComment(commentId);
-        } catch {
-          setIsCommentsError(true);
-        }
-      } finally {
+        await postService.deleteComment(commentId);
+      } catch {
+        setIsCommentDeleteError(true);
         setComments(comments);
-        setIsCommentsError(false);
+      } finally {
+        setIsCommentDeleteError(false);
       }
     },
     [comments],
@@ -78,5 +73,6 @@ export const useComments = (postId?: number | null) => {
     deleteComment,
     loadComments,
     isCommentCreating,
+    isCommentDeleteError,
   };
 };

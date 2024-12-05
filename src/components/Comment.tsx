@@ -4,9 +4,14 @@ import type { Comment } from '../types/Comment';
 type Props = {
   comment: Comment;
   deleteComment: (commentId: number) => void;
+  isCommentDeleteError: boolean;
 };
 
-const CommentItem: React.FC<Props> = ({ comment, deleteComment }) => {
+const CommentItem: React.FC<Props> = ({
+  comment,
+  deleteComment,
+  isCommentDeleteError,
+}) => {
   const handleDelete = () => {
     deleteComment(comment.id);
   };
@@ -14,7 +19,7 @@ const CommentItem: React.FC<Props> = ({ comment, deleteComment }) => {
   return (
     <article className="message is-small" data-cy="Comment">
       <div className="message-header">
-        <a href={comment.email} data-cy="CommentAuthor">
+        <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
           {comment.name}
         </a>
         <button
@@ -31,6 +36,12 @@ const CommentItem: React.FC<Props> = ({ comment, deleteComment }) => {
       <div className="message-body" data-cy="CommentBody">
         {comment.body}
       </div>
+
+      {isCommentDeleteError && (
+        <div className="notification is-danger" data-cy="CommentDeleteError">
+          Something went wrong
+        </div>
+      )}
     </article>
   );
 };

@@ -11,15 +11,12 @@ export const useUsers = () => {
       const usersFromServer = await getUsers();
 
       setUsers(usersFromServer);
-    } catch {
-      throw new Error('Unable to load users');
-    } finally {
-    }
+    } catch {}
   }, []);
 
   useEffect(() => {
     loadUsers();
-  }, []);
+  }, [loadUsers]);
 
   return {
     users,

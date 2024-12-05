@@ -21,11 +21,11 @@ const PostItem: React.FC<Props> = ({
   const handleSelectPost = () => {
     if (isSelected) {
       setCurrentPost(null);
-      setIsShowForm(false);
     } else {
       setCurrentPost(post);
-      setIsShowForm(false);
     }
+
+    setIsShowForm(false);
   };
 
   return (

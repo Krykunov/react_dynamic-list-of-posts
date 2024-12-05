@@ -13,27 +13,21 @@ export const usePosts = (id: number | null) => {
     setIsPostsError(false);
 
     try {
-      try {
-        const postsFromServer = await getPosts(userId);
+      const postsFromServer = await getPosts(userId);
 
-        setPosts(postsFromServer);
-      } catch {
-        setIsPostsError(true);
-      }
+      setPosts(postsFromServer);
+    } catch {
+      setIsPostsError(true);
     } finally {
       setIsPostsLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    if (!id) {
-      setPosts([]);
-
-      return;
+    if (id) {
+      loadPosts(id);
     }
-
-    loadPosts(id);
-  }, [id]);
+  }, [id, loadPosts]);
 
   return {
     posts,
